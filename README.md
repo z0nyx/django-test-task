@@ -1,28 +1,17 @@
-# Django Stripe Payments
+## Сервер:
 
-Реализация тестового задания: Django backend с Stripe Checkout Session, HTML-страницами оплаты, Django Admin и бонусными задачами.
+ip самого сервера: http://193.58.121.10:8000/
 
-## Этапы разработки
+Прочие url для теста:
+http://193.58.121.10:8000/item/1
+http://193.58.121.10:8000/buy/1
+http://193.58.121.10:8000/order/1
+http://193.58.121.10:8000/order/1/buy
+http://193.58.121.10:8000/payment-intent/item/1
 
-- `day1`: обязательный минимум с `Item`, `/item/<id>`, `/buy/<id>` и Stripe Checkout.
-- `day2`: добавлены Docker, env-конфигурация, Django Admin и security-настройки.
-- `day3`: добавлены бонусные модели, валюты, Order Checkout и Payment Intent.
-- Корень проекта: финальная версия четвёртого дня.
-
-## Что реализовано
-
-- Модель `Item` с полями `name`, `description`, `price`, `currency`.
-- `GET /item/<id>`: HTML-страница товара с кнопкой `Buy`.
-- `GET /buy/<id>`: создание `stripe.checkout.Session` и возврат `session.id`.
-- Модель `Order`, объединяющая несколько `Item`.
-- `GET /order/<id>` и `GET /order/<id>/buy`: оплата заказа через Stripe Checkout.
-- Модели `Discount` и `Tax`, которые применяются при создании Stripe Checkout Session.
-- Разные Stripe keypair для `usd` и `eur`.
-- Дополнительный Payment Intent flow: `/payment-intent/item/<id>`.
-- Django Admin для всех моделей.
-- Docker и `docker-compose.yml`.
-- Конфигурация через `.env`.
-- CSP, security headers, CSRF для POST Payment Intent endpoint.
+### Данные для входа в админ панель: 
+username: admin
+пароль: admin123
 
 ## Локальный запуск
 
@@ -30,27 +19,46 @@
 cp .env.example .env
 ```
 
-Заполните Stripe ключи в `.env`. Можно использовать общий keypair:
+Заполнить .env окружение:
 
 ```env
-STRIPE_PUBLIC_KEY=pk_test_xxx
-STRIPE_SECRET_KEY=sk_test_xxx
-```
+POSTGRES_DB=app
+POSTGRES_USER=app
+POSTGRES_PASSWORD=
 
-Или разные ключи по валютам:
+DJANGO_SECRET_KEY=
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+DJANGO_CSRF_TRUSTED_ORIGINS=http://127.0.0.1
+
+DJANGO_SECURE_SSL_REDIRECT=False
+DJANGO_SECURE_HSTS_SECONDS=0
+DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS=False
+DJANGO_SECURE_HSTS_PRELOAD=False
+DJANGO_SESSION_COOKIE_SECURE=False
+DJANGO_CSRF_COOKIE_SECURE=False
+
+DJANGO_SUPERUSER_USERNAME=
+DJANGO_SUPERUSER_EMAIL=
+DJANGO_SUPERUSER_PASSWORD=
+DJANGO_SUPERUSER_RESET_PASSWORD=False
+
+STRIPE_PUBLIC_KEY=pk_test_
+STRIPE_SECRET_KEY=sk_test_
+```
 
 ```env
-STRIPE_PUBLIC_KEY_USD=pk_test_xxx
-STRIPE_SECRET_KEY_USD=sk_test_xxx
-STRIPE_PUBLIC_KEY_EUR=pk_test_xxx
-STRIPE_SECRET_KEY_EUR=sk_test_xxx
+STRIPE_PUBLIC_KEY=pk
+STRIPE_SECRET_KEY=sk
 ```
+
 
 Установка и запуск:
 
+Linux: 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
+python3 -m venv .venv
+source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_demo
@@ -58,7 +66,18 @@ python manage.py ensure_admin
 python manage.py runserver
 ```
 
-Приложение будет доступно по адресу:
+Windows:
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_demo
+python manage.py ensure_admin
+python manage.py runserver
+```
+
+Адрес:
 
 ```text
 http://127.0.0.1:8000/
@@ -92,7 +111,7 @@ http://127.0.0.1:8000/payment-intent/item/1
 
 ## Админка
 
-Команда `ensure_admin` создаёт администратора из переменных:
+`ensure_admin` создаёт админа. Настройка тут в .env окружении:
 
 ```env
 DJANGO_SUPERUSER_USERNAME=admin
