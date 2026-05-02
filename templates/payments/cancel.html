@@ -1,0 +1,12 @@
+{% extends "payments/base.html" %}
+
+{% block title %}Payment canceled{% endblock %}
+
+{% block content %}
+<section class="detail">
+    <p class="eyebrow">Stripe</p>
+    <h1>Payment canceled</h1>
+    <p class="description">The payment was canceled before completion.</p>
+    <a class="button" href="{% url 'index' %}">Back to catalog</a>
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "payments/base.html" %}
+
+{% block title %}Catalog{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="section-heading">
+        <h1>Catalog</h1>
+        <p>Stripe Checkout and Payment Intent demo objects.</p>
+    </div>
+    <div class="grid">
+        {% for item in items %}
+            <article class="card">
+                <h2>{{ item.name }}</h2>
+                <p>{{ item.description }}</p>
+                <p class="price">{{ item.price }} {{ item.currency|upper }}</p>
+                <div class="actions">
+                    <a class="button" href="{% url 'item_detail' item.id %}">Checkout</a>
+                    <a class="button secondary" href="{% url 'payment_intent_item' item.id %}">Payment Intent</a>
+                </div>
+            </article>
+        {% empty %}
+            <p>No items are available.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-heading">
+        <h1>Orders</h1>
+        <p>Orders can combine multiple items with a discount and tax.</p>
+    </div>
+    <div class="grid">
+        {% for order in orders %}
+            <article class="card">
+                <h2>Order {{ order.id }}</h2>
+                <p>{{ order.item_list|length }} items</p>
+                <p class="price">{{ order.total_price }} {{ order.currency|upper }}</p>
+                <a class="button" href="{% url 'order_detail' order.id %}">Open order</a>
+            </article>
+        {% empty %}
+            <p>No orders are available.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

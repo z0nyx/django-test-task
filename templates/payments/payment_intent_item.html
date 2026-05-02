@@ -1,0 +1,38 @@
+{% extends "payments/base.html" %}
+{% load static %}
+
+{% block title %}Payment Intent {{ item.name }}{% endblock %}
+
+{% block content %}
+<section class="detail">
+    <div>
+        <p class="eyebrow">Payment Intent</p>
+        <h1>{{ item.name }}</h1>
+        <p class="description">{{ item.description }}</p>
+    </div>
+    <dl class="summary">
+        <div>
+            <dt>Price</dt>
+            <dd>{{ item.price }} {{ item.currency|upper }}</dd>
+        </div>
+    </dl>
+    <form
+        class="payment-form"
+        data-payment-intent-form
+        data-intent-url="{% url 'create_payment_intent_for_item' item.id %}"
+        data-public-key="{{ stripe_public_key }}"
+    >
+        {% csrf_token %}
+        <div id="card-element" class="card-element"></div>
+        <button class="button" type="submit" {% if not stripe_public_key %}disabled{% endif %}>Pay</button>
+        <p class="status" role="status" data-payment-status>
+            {% if not stripe_public_key %}Stripe keys for {{ item.currency|upper }} are not configured.{% endif %}
+        </p>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/payment_intent.js' %}"></script>
+{% endblock %}

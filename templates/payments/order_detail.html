@@ -1,0 +1,75 @@
+{% extends "payments/base.html" %}
+{% load static %}
+
+{% block title %}Order {{ order.id }}{% endblock %}
+
+{% block content %}
+<section class="detail">
+    <div>
+        <p class="eyebrow">Order</p>
+        <h1>Order {{ order.id }}</h1>
+        <p class="description">Checkout Session with multiple items, discount, and tax.</p>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.item_list %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.price }} {{ item.currency|upper }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <dl class="summary">
+        <div>
+            <dt>Subtotal</dt>
+            <dd>{{ order.items_subtotal }} {{ order.currency|upper }}</dd>
+        </div>
+        <div>
+            <dt>Discount</dt>
+            <dd>{{ order.discount_amount }} {{ order.currency|upper }}</dd>
+        </div>
+        <div>
+            <dt>Tax</dt>
+            <dd>{{ order.tax_amount }} {{ order.currency|upper }}</dd>
+        </div>
+        <div>
+            <dt>Total</dt>
+            <dd>{{ order.total_price }} {{ order.currency|upper }}</dd>
+        </div>
+    </dl>
+
+    <div class="actions">
+        <button
+            class="button"
+            type="button"
+            data-checkout-button
+            data-buy-url="{% url 'buy_order' order.id %}"
+            data-public-key="{{ stripe_public_key }}"
+            {% if not stripe_public_key %}disabled{% endif %}
+        >
+            Buy order
+        </button>
+    </div>
+    <p class="status" role="status" data-checkout-status>
+        {% if not stripe_public_key %}Stripe keys are not configured or order currency is invalid.{% endif %}
+    </p>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}
